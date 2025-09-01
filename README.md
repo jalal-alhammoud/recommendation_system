@@ -12,7 +12,7 @@
 
 ```bash
 gitclone
-https://github.com/jalal-alhammoud/System-for-analyzing-customer-buying-behavior-in-online-stores.git
+https://github.com/jalal-alhammoud/recommendation_system.git
 cd System-for-analyzing-customer-buying-behavior-in-online-stores
 ```
 2. **تثبيت المكتبات المطلوبة:**
