@@ -12,7 +12,7 @@
 
 ```bash
 git clone https://github.com/jalal-alhammoud/recommendation_system.git
-cd recommendation-system
+cd recommendation_system
 ```
 2. **إنشاء بيئة افتراضية**
 ```bash
