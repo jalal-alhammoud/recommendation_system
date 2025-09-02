@@ -24,7 +24,7 @@ myenv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-4. **تشغيل flask api:**
+4. **تشغيل Flask Api:**
 ```bash
 python app.py
 ```
