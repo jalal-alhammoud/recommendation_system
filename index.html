@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #6c757d;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+            --bg-gradient: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+            --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        body {
+            font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,.1);
+            background: var(--bg-gradient);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+            background-color: #f8f9fc;
+            padding: 10px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1.2rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--bg-gradient);
+            border: none;
+        }
+
+        .product-img {
+            height: 200px;
+            object-fit: contain;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .category-img {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .user-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,.1);
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background-color: #f8f9fc;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        #content {
+            min-height: 70vh;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+
+        /* Recommendation styles */
+        .recommendation-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+
+        .recommendation-card .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Badges for recommended products */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35em 0.65em;
+        }
+
+        /* Section headings */
+        h1, h2, h3, h4, h5, h6 {
+            color: #2e3a59;
+            font-weight: 700;
+        }
+
+        .lead {
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+        /* Alert styles */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Animation for loading content */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #content > * {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Styles for similar products section */
+        #similarProductsSection {
+            background-color: #f8f9fc;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            margin-top: 30px;
+        }
+
+        .cart-recommendations {
+            background-color: #fffaf0;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--warning);
+            margin-top: 30px;
+        }
+
+        /* Hero section */
+        .hero-section {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 3rem 0;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            color: white;
+            font-weight: 800;
+        }
+
+        .hero-section .lead {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Breadcrumb navigation */
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .products-per-page-selector {
+                margin-bottom: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .products-per-page-selector .form-label {
+                margin-bottom: 0.25rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section .lead {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showHome()">E-Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showHome()">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showProducts()">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showCategories()">Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showCart()">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showRecommendationsPage()">Recommendations</a></li>
+                </ul>
+                
+                <!-- Search bar -->
+                <form class="d-flex me-3" onsubmit="event.preventDefault(); searchProducts(document.getElementById('navbarSearch').value);">
+                    <input class="form-control me-2" type="search" id="navbarSearch" placeholder="Search products..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                
+                <div id="authButtons" class="d-flex">
+                    <button class="btn btn-outline-light me-2" onclick="showLogin()">Login</button>
+                    <button class="btn btn-light" onclick="showRegister()">Register</button>
+                </div>
+                <div id="userProfile" class="d-none">
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                            <span id="usernameDisplay"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showUserProfile()"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li id="adminPanelItem" class="d-none"><a class="dropdown-item" href="#" onclick="showAdminPanel()"><i class="fas fa-cog me-2"></i>Admin Panel</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb" id="breadcrumbNav" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="showHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="currentPage"></li>
+            </ol>
+        </nav>
+        
+        <!-- Dynamic content -->
+        <div id="content"></div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p>All rights reserved &copy; E-Commerce Store 2025</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Register and Login -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="authModalContent">
+                <!-- Content will be filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const BASE_URL = 'http://127.0.0.1:5000'
+        const API_BASE_URL = `${BASE_URL}/api`;
+        const PRODUCT_IMAGE_URL = `${BASE_URL}/static/uploads/products`;
+        const CATEGORY_IMAGE_URL = `${BASE_URL}/static/uploads/categories`;
+        const USER_IMAGE_URL = `${BASE_URL}/static/uploads/users`;
+        
+        // Default image paths
+        const DEFAULT_PRODUCT_IMAGE = 'default.png';
+        const DEFAULT_CATEGORY_IMAGE = 'default.png';
+        const DEFAULT_USER_IMAGE = 'default.png';
+        
+        let currentUser = null;
+        let currentPage = 1;
+        let productsPerPage = 12;
+        let totalProducts = 0;
+        let currentProducts = [];
+
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            showHome();
+        });
+
+        // ==================== Helper Functions ====================
+
+        // Function to get image URL with fallback to default
+        function getProductImageUrl(imageName) {
+            return imageName ? `${PRODUCT_IMAGE_URL}/${imageName}` : `${PRODUCT_IMAGE_URL}/${DEFAULT_PRODUCT_IMAGE}`;
+        }
+
+        function getCategoryImageUrl(imageName) {
+            return imageName ? `${CATEGORY_IMAGE_URL}/${imageName}` : `${CATEGORY_IMAGE_URL}/${DEFAULT_CATEGORY_IMAGE}`;
+        }
+
+        function getUserImageUrl(imageName) {
+            return imageName ? `${USER_IMAGE_URL}/${imageName}` : `${USER_IMAGE_URL}/${DEFAULT_USER_IMAGE}`;
+        }
+
+        // Function to update breadcrumb
+        function updateBreadcrumb(currentPageName) {
+            document.getElementById('currentPage').textContent = currentPageName;
+            document.getElementById('breadcrumbNav').classList.remove('d-none');
+        }
+
+        // Function to hide breadcrumb
+        function hideBreadcrumb() {
+            document.getElementById('breadcrumbNav').classList.add('d-none');
+        }
+
+        // ==================== Authentication Functions ====================
+
+        function checkAuthStatus() {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                fetchUserProfile();
+            } else {
+                document.getElementById('authButtons').classList.remove('d-none');
+                document.getElementById('userProfile').classList.add('d-none');
+            }
+        }
+
+        async function fetchUserProfile() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                logout();
+                return;
+            }
+
+            try {
+                const userId = token;
+                if (!userId) {
+                    throw new Error('Invalid token: missing user_id');
+                }
+
+                const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                currentUser = data.user;
+                
+                // Update UI
+                document.getElementById('authButtons').classList.add('d-none');
+                document.getElementById('userProfile').classList.remove('d-none');
+                document.getElementById('usernameDisplay').textContent = currentUser.username;
+                
+                if (currentUser.admin) {
+                    document.getElementById('adminPanelItem').classList.remove('d-none');
+                } else {
+                    document.getElementById('adminPanelItem').classList.add('d-none');
+                }
+
+            } catch (error) {
+                console.error('Failed to fetch profile:', error);
+                if (error.message.includes('422')) {
+                    alert('Your session has expired, please login again');
+                }
+                logout();
+            }
+        }
+
+        function showLogin() {
+            const modalContent = `
+                <div class="modal-header">
+                    <h5 class="modal-title">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginIdentifier" class="form-label">Email or Username</label>
+                            <input type="text" class="form-control" id="loginIdentifier" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('authModalContent').innerHTML = modalContent;
+            const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+            authModal.show();
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                loginUser();
+            });
+        }
+
+        function loginUser() {
+            const identifier = document.getElementById('loginIdentifier').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    identifier: identifier,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Invalid credentials');
+                }
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem('access_token', data.user.user_id);
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+                checkAuthStatus();
+                showHome();
+            })
+            .catch(error => {
+                alert('Login failed: ' + error.message);
+            });
+        }
+
+        function showRegister() {
+            const modalContent = `
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="registerUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="registerUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerImage" class="form-label">Profile Picture (optional)</label>
+                            <input type="file" class="form-control" id="registerImage" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerAge" class="form-label">Age (optional)</label>
+                            <input type="number" class="form-control" id="registerAge">
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerGender" class="form-label">Gender (optional)</label>
+                            <select class="form-select" id="registerGender">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerLocation" class="form-label">Location (optional)</label>
+                            <input type="text" class="form-control" id="registerLocation">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('authModalContent').innerHTML = modalContent;
+            const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+            authModal.show();
+            
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                registerUser();
+            });
+        }
+
+        function registerUser() {
+            const formData = new FormData();
+            formData.append('username', document.getElementById('registerUsername').value);
+            formData.append('email', document.getElementById('registerEmail').value);
+            formData.append('password', document.getElementById('registerPassword').value);
+            
+            const age = document.getElementById('registerAge').value;
+            const gender = document.getElementById('registerGender').value;
+            const location = document.getElementById('registerLocation').value;
+            const imageFile = document.getElementById('registerImage').files[0];
+            
+            if (age) formData.append('age', age);
+            if (gender) formData.append('gender', gender);
+            if (location) formData.append('location', location);
+            if (imageFile) formData.append('user_image', imageFile);
+            
+            fetch(`${API_BASE_URL}/signup`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Account created successfully! You can now login.');
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+                showLogin();
+            })
+            .catch(error => {
+                alert('Registration error: ' + error.message);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            currentUser = null;
+            checkAuthStatus();
+            showHome();
+        }
+
+        // ==================== Display Functions ====================
+
+        function showHome() {
+            hideBreadcrumb();
+            
+            fetch(`${API_BASE_URL}/products?limit=8`)
+            .then(response => response.json())
+            .then(data => {
+                let productsHTML = `
+                    <div class="hero-section text-center mb-5">
+                        <h1 class="display-4">Welcome to E-Store</h1>
+                        <p class="lead">Discover amazing products at great prices</p>
+                    </div>
+                `;
+                
+                // Show recommendations for logged-in users first
+                if (currentUser) {
+                    productsHTML += `
+                        <div id="recommendationsContainer">
+                            <div class="text-center mb-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading recommendations...</span>
+                                </div>
+                                <p class="mt-2">Loading personalized recommendations...</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                productsHTML += `
+                    <h2 class="mb-4">Latest Products</h2>
+                    <div class="row">
+                `;
+                
+                data.products.forEach(product => {
+                    productsHTML += `
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.product_name}</h5>
+                                    <p class="card-text">${product.price} $</p>
+                                    <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                productsHTML += '</div>';
+                
+                // Remove the search form from home page as requested
+                
+                document.getElementById('content').innerHTML = productsHTML;
+                
+                // Show recommendations for logged-in users
+                if (currentUser) {
+                    showRecommendations();
+                } else {
+                    // Show call to action for non-logged in users
+                    document.getElementById('content').innerHTML += `
+                        <div class="card mt-4">
+                            <div class="card-body text-center">
+                                <h4>Get Personalized Recommendations</h4>
+                                <p>Sign in to see products tailored just for you based on your preferences and behavior</p>
+                                <button class="btn btn-primary" onclick="showLogin()">Sign In</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        function showProducts(page = 1) {
+            updateBreadcrumb('Products');
+            currentPage = page;
+            
+            fetch(`${API_BASE_URL}/products?limit=${productsPerPage}&offset=${(page - 1) * productsPerPage}`)
+            .then(response => response.json())
+            .then(data => {
+                currentProducts = data.products;
+                totalProducts = data.total_count || data.products.length;
+                
+                let productsHTML = '<h2 class="mb-4">All Products</h2>';
+                
+                // Add products per page selector
+                productsHTML += `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        ${currentUser && currentUser.admin ? 
+                            '<button class="btn btn-success" onclick="showAddProductForm()"><i class="fas fa-plus"></i> Add New Product</button>' : 
+                            '<div></div>'
+                        }
+                        <div class="products-per-page-selector">
+                            <label for="productsPerPage" class="form-label me-2">Products per page:</label>
+                            <select class="form-select form-select-sm d-inline-block w-auto" id="productsPerPage" onchange="changeProductsPerPage(this.value)">
+                                <option value="12" ${productsPerPage === 12 ? 'selected' : ''}>12</option>
+                                <option value="24" ${productsPerPage === 24 ? 'selected' : ''}>24</option>
+                                <option value="48" ${productsPerPage === 48 ? 'selected' : ''}>48</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+                
+                productsHTML += '<div class="row">';
+                
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach(product => {
+                        productsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    productsHTML += `
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                No products found.
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                productsHTML += '</div>';
+                
+                // Add pagination
+                productsHTML += generatePagination();
+                
+                document.getElementById('content').innerHTML = productsHTML;
+                
+                // Show recommendations for logged-in users
+                if (currentUser) {
+                    showProductRecommendations();
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        function changeProductsPerPage(value) {
+            productsPerPage = parseInt(value);
+            showProducts(1); // Go back to the first page
+        }
+
+        function showProductDetails(productId) {
+            updateBreadcrumb('Product Details');
+            
+            const token = localStorage.getItem('access_token');
+            if (token){
+                fetch(`${API_BASE_URL}/products/view`, {
+                method: 'POST', 
+                body: JSON.stringify({
+                    user_id: token,
+                    product_id: productId
+                }), 
+                headers: {'Content-Type': 'application/json'},
+                keepalive: true
+                }).catch(() => {});
+            } 
+            
+            fetch(`${API_BASE_URL}/products/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                const product = data.product;
+                
+                let reviewsHTML = '';
+                if (product.reviews && product.reviews.length > 0) {
+                    reviewsHTML = '<h4 class="mt-4">Reviews</h4>';
+                    product.reviews.forEach(review => {
+                        reviewsHTML += `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${review.user.username}</h5>
+                                    <div class="rating">
+                                        ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                    </div>
+                                    <p class="card-text">${review.review_text || 'No comment'}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                let addReviewHTML = '';
+                if (currentUser) {
+                    const userReview = product.reviews?.find(r => r.user.user_id === currentUser.user_id);
+                    
+                    addReviewHTML = `
+                        <h4 class="mt-4">${userReview ? 'Update Your Review' : 'Add Your Review'}</h4>
+                        <form id="reviewForm">
+                            <div class="mb-3">
+                                <label for="reviewRating" class="form-label">Rating</label>
+                                <select class="form-select" id="reviewRating" required>
+                                    <option value="1" ${userReview?.rating === 1 ? 'selected' : ''}>1 Star</option>
+                                    <option value="2" ${userReview?.rating === 2 ? 'selected' : ''}>2 Stars</option>
+                                    <option value="3" ${userReview?.rating === 3 ? 'selected' : ''}>3 Stars</option>
+                                    <option value="4" ${userReview?.rating === 4 ? 'selected' : ''}>4 Stars</option>
+                                    <option value="5" ${userReview?.rating === 5 ? 'selected' : ''}>5 Stars</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reviewText" class="form-label">Comment (optional)</label>
+                                <textarea class="form-control" id="reviewText" rows="3">${userReview?.review_text || ''}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">${userReview ? 'Update' : 'Submit'}</button>
+                        </form>
+                    `;
+                }
+                
+                let adminControls = '';
+                if (currentUser && currentUser.admin) {
+                    adminControls = `
+                        <div class="mt-3">
+                            <button class="btn btn-warning me-2" onclick="showEditProductForm(${product.product_id})">Edit Product</button>
+                            <button class="btn btn-danger" onclick="deleteProduct(${product.product_id})">Delete Product</button>
+                        </div>
+                    `;
+                }
+                
+                const productHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="${getProductImageUrl(product.product_image)}" class="img-fluid rounded" alt="${product.product_name}">
+                        </div>
+                        <div class="col-md-6">
+                            <h2>${product.product_name}</h2>
+                            <p class="text-muted">${product.category?.cat_name || 'No category'}</p>
+                            <h3 class="text-primary">${product.price} $</h3>
+                            <p><strong>Brand:</strong> ${product.brand || 'Unknown'}</p>
+                            <p><strong>Made in:</strong> ${product.country_made || 'Unknown'}</p>
+                            <p>${product.description || 'No product description available'}</p>
+                            <button class="btn btn-success btn-lg" onclick="addToCart(${product.product_id})">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                            ${adminControls}
+                        </div>
+                    </div>
+                    ${reviewsHTML}
+                    ${addReviewHTML}
+                    
+                    <!-- Section for similar products -->
+                    <div id="similarProductsSection" class="mt-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>Similar Products You Might Like</h3>
+                            <div class="spinner-border text-primary" role="status" id="similarProductsSpinner">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div id="similarProductsContainer" class="row"></div>
+                    </div>
+                `;
+                
+                document.getElementById('content').innerHTML = `
+                    <button class="btn btn-secondary mb-3" onclick="showProducts()"><i class="fas fa-arrow-left"></i> Back to Products</button>
+                    ${productHTML}
+                `;
+                
+                // Load similar products
+                loadSimilarProducts(productId);
+                
+                if (currentUser) {
+                    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        submitReview(product.product_id);
+                    });
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        function submitReview(productId) {
+            const rating = document.getElementById('reviewRating').value;
+            const reviewText = document.getElementById('reviewText').value;
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: token,
+                    product_id: productId,
+                    rating: rating,
+                    review_text: reviewText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                showProductDetails(productId);
+            })
+            .catch(error => {
+                alert('Error submitting review: ' + error.message);
+            });
+        }
+
+       function showCategories() {
+    updateBreadcrumb('Categories');
+    
+    fetch(`${API_BASE_URL}/categories`)
+    .then(response => response.json())
+    .then(data => {
+        let categoriesHTML = '<h2 class="mb-4">Categories</h2>';
+        
+        if (currentUser && currentUser.admin) {
+            categoriesHTML += '<button class="btn btn-success mb-3" onclick="showAddCategoryForm()"><i class="fas fa-plus"></i> Add New Category</button>';
+        }
+        
+        categoriesHTML += '<div class="row">'; // افتتاح div.row هنا
+        
+        data.categories.forEach(category => {
+            categoriesHTML += `
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="${getCategoryImageUrl(category.cat_image)}" class="card-img-top category-img" alt="${category.cat_name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${category.cat_name}</h5>
+                            <p class="card-text">${category.description || 'No description'}</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary" onclick="showProductsByCategory(${category.cat_id})">View Products</button>
+                                ${currentUser && currentUser.admin ? `
+                                    <div>
+                                        <button class="btn btn-warning me-2" onclick="showEditCategoryForm(${category.cat_id})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteCategory(${category.cat_id})">Delete</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        categoriesHTML += '</div>'; 
+        
+        document.getElementById('content').innerHTML = categoriesHTML;
+    })
+    .catch(error => {
+        document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    });
+}
+        function showProductsByCategory(categoryId) {
+            updateBreadcrumb('Category Products');
+            
+            fetch(`${API_BASE_URL}/products/category/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                let productsHTML = '<button class="btn btn-secondary mb-3" onclick="showCategories()"><i class="fas fa-arrow-left"></i> Back to Categories</button>';
+                productsHTML += '<h2 class="mb-4">Products in this Category</h2><div class="row">';
+                
+                data.products.forEach(product => {
+                    productsHTML += `
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.product_name}</h5>
+                                    <p class="card-text">${product.price} $</p>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                        <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                productsHTML += '</div>';
+                document.getElementById('content').innerHTML = productsHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        function showCart() {
+            updateBreadcrumb('Shopping Cart');
+            
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('Please login to view your cart');
+                showLogin();
+                return;
+            }
+            
+            fetch(`${API_BASE_URL}/cart/${token}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 404) {
+                    return { "cart": {items: []} };
+                }
+                return response.json();
+            })
+            .then(data => {
+                let cartHTML = '<h2 class="mb-4">Shopping Cart</h2>';
+                
+                if (data.cart?.items.length === 0) {
+                    cartHTML += '<div class="alert alert-info">Your cart is empty</div>';
+                } else {
+                    cartHTML += `
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    let total = 0;
+                    data.cart.items.forEach(item => {
+                        const itemTotal = item.product.price * item.quantity;
+                        total += itemTotal;
+                        
+                        cartHTML += `
+                            <tr>
+                                <td><img src="${getProductImageUrl(item.product.product_image)}" class="cart-item-img" alt="${item.product.product_name}"></td>
+                                <td>${item.product.product_name}</td>
+                                <td>${item.product.price} $</td>
+                                <td>${item.quantity}</td>
+                                <td>${itemTotal} $</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.cart_item_id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    cartHTML += `
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                        <td><strong>${total} $</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button class="btn btn-danger me-2" onclick="clearCart()">Clear Cart</button>
+                            <button class="btn btn-success" onclick="checkout()">Checkout</button>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('content').innerHTML = cartHTML;
+                
+                // Load cart-based recommendations
+                if (currentUser) {
+                    showCartBasedRecommendations();
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        function addToCart(productId) {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('Please login to add products to cart');
+                showLogin();
+                return;
+            }
+            
+            fetch(`${API_BASE_URL}/cart`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: token,
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Product added to cart');
+                showCart();
+            })
+            .catch(error => {
+                alert('Error adding to cart: ' + error.message);
+            });
+        }
+
+        function removeFromCart(itemId) {
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/cart/item/${itemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Product removed from cart');
+                    showCart();
+                } else {
+                    throw new Error('Failed to remove item');
+                }
+            })
+            .catch(error => {
+                alert('Error removing item: ' + error.message);
+            });
+        }
+
+        function clearCart() {
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/cart`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                 body: JSON.stringify({
+                    user_id: token,
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Cart cleared');
+                    showCart();
+                } else {
+                    throw new Error('Failed to clear cart');
+                }
+            })
+            .catch(error => {
+                alert('Error clearing cart: ' + error.message);
+            });
+        }
+
+        function checkout() {
+            const token = localStorage.getItem('access_token');
+            fetch(`${API_BASE_URL}/cart/purchase`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    user_id: token,
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Purchase completed successfully! Thank you for shopping with us.');
+                    clearCart();
+                } else {
+                    throw new Error('Failed to purchase');
+                }
+            })
+            .catch(error => {
+                alert('Error during checkout: ' + error.message);
+            });
+        }
+
+        function showUserProfile() {
+            updateBreadcrumb('User Profile');
+            
+            if (!currentUser) {
+                showLogin();
+                return;
+            }
+            const token = localStorage.getItem('access_token');
+            
+            let profileHTML = `
+                <h2 class="mb-4">User Profile</h2>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="${getUserImageUrl(currentUser.user_image)}" class="user-img mb-3" alt="User image">
+                        <button class="btn btn-warning" onclick="showEditProfileForm()">Edit Profile</button>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tr>
+                                <th>Username</th>
+                                <td>${currentUser.username}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>${currentUser.email}</td>
+                            </tr>
+                            <tr>
+                                <th>Age</th>
+                                <td>${currentUser.age || 'Not specified'}</td>
+                            </tr>
+                            <tr>
+                                <th>Gender</th>
+                                <td>${currentUser.gender === 'male' ? 'Male' : currentUser.gender === 'female' ? 'Female' : 'Not specified'}</td>
+                            </tr>
+                            <tr>
+                                <th>Location</th>
+                                <td>${currentUser.location || 'Not specified'}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button class="btn btn-info mb-3" onclick="showUserPreferredProducts()">
+                        <i class="fas fa-heart me-2"></i>View Your Preferred Products
+                    </button>
+                </div>
+                
+                <h3 class="mt-4">Your Reviews</h3>
+            `;
+            
+            fetch(`${API_BASE_URL}/reviews/user/${currentUser.user_id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.reviews && data.reviews.length > 0) {
+                    data.reviews.forEach(review => {
+                        profileHTML += `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${review.product.product_name}</h5>
+                                    <div class="rating">
+                                        ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                    </div>
+                                    <p class="card-text">${review.review_text || 'No comment'}</p>
+                                    <button class="btn btn-sm btn-warning" onclick="showProductDetails(${review.product.product_id})">View Product</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    profileHTML += '<p>You haven\'t reviewed any products yet.</p>';
+                }
+                
+                document.getElementById('content').innerHTML = profileHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // ==================== Recommendation Functions ====================
+
+        // Show recommendations on home page
+        // Show recommendations on home page
+function showRecommendations() {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    // Fetch recommendations from multiple sources
+    Promise.all([
+        fetch(`${API_BASE_URL}/user-suggestions/${token}`).then(res => res.json()),
+        fetch(`${API_BASE_URL}/user-preferred-products/${token}`).then(res => res.json()),
+        fetch(`${API_BASE_URL}/similar-users-products/${token}`).then(res => res.json())
+    ])
+    .then(([suggestionsData, preferredData, similarUsersData]) => {
+        const allRecommendations = [];
+        const seenProducts = new Set();
+        
+        // Merge recommendations from all sources and remove duplicates
+        if (suggestionsData.suggestions) {
+            suggestionsData.suggestions.forEach(product => {
+                if (!seenProducts.has(product.product_id)) {
+                    allRecommendations.push({...product, source: "Based on your profile"});
+                    seenProducts.add(product.product_id);
+                }
+            });
+        }
+        
+        if (preferredData.preferred_products) {
+            preferredData.preferred_products.forEach(product => {
+                if (!seenProducts.has(product.product_id)) {
+                    allRecommendations.push({...product, source: "Your preferences"});
+                    seenProducts.add(product.product_id);
+                }
+            });
+        }
+        
+        if (similarUsersData.products_from_similar_users) {
+            similarUsersData.products_from_similar_users.forEach(product => {
+                if (!seenProducts.has(product.product_id)) {
+                    allRecommendations.push({...product, source: "Similar users"});
+                    seenProducts.add(product.product_id);
+                }
+            });
+        }
+        
+        // If no recommendations, hide the section
+        if (allRecommendations.length === 0) {
+            document.getElementById('recommendationsContainer').innerHTML = `
+                <div class="alert alert-info">
+                    <h4>No recommendations yet</h4>
+                    <p>Start browsing products and making purchases to get personalized recommendations.</p>
+                    <button class="btn btn-primary mt-2" onclick="showProducts()">Browse Products</button>
+                </div>
+            `;
+            return;
+        }
+        
+        // Display recommendations - THIS IS THE FIXED PART
+        let recommendationsHTML = `
+            <h2 class="mb-4">Personalized Recommendations</h2>
+            <div class="row">
+        `;
+        
+        allRecommendations.slice(0, 8).forEach(product => {
+            recommendationsHTML += `
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 recommendation-card">
+                        <div class="position-relative">
+                            <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                            <span class="position-absolute top-0 start-0 badge bg-info m-2">Recommended</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${product.product_name}</h5>
+                            <p class="card-text">${product.price} $</p>
+                            <p class="card-text"><small class="text-muted">${product.source}</small></p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        recommendationsHTML += '</div>';
+        
+        // Replace loading state with actual recommendations
+        document.getElementById('recommendationsContainer').innerHTML = recommendationsHTML;
+    })
+    .catch(error => {
+        console.error('Error loading recommendations:', error);
+        document.getElementById('recommendationsContainer').innerHTML = `
+            <div class="alert alert-info">
+                <h4>Recommendations temporarily unavailable</h4>
+                <p>We're having trouble loading your personalized recommendations at the moment.</p>
+                <button class="btn btn-primary mt-2" onclick="showProducts()">Browse All Products</button>
+            </div>
+        `;
+    });
+}
+
+        // Show product recommendations on products page
+        function showProductRecommendations() {
+            const token = localStorage.getItem('access_token');
+            if (!token) return;
+
+            fetch(`${API_BASE_URL}/user-suggestions/${token}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.suggestions && data.suggestions.length > 0) {
+                    let recommendationsHTML = `
+                        <div class="recommendations-section mt-5">
+                            <h3 class="mb-4">Recommended For You</h3>
+                            <div class="row">
+                    `;
+                    
+                    data.suggestions.slice(0, 4).forEach(product => {
+                        recommendationsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 recommendation-card">
+                                    <div class="position-relative">
+                                        <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                        <span class="position-absolute top-0 start-0 badge bg-primary m-2">For You</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    recommendationsHTML += '</div></div>';
+                    
+                    // Add recommendations to products page
+                    document.getElementById('content').innerHTML += recommendationsHTML;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading product recommendations:', error);
+            });
+        }
+
+        // Function to show recommendations based on cart items
+        function showCartBasedRecommendations() {
+            const token = localStorage.getItem('access_token');
+            if (!token) return;
+            
+            fetch(`${API_BASE_URL}/cart/${token}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 404) {
+                    return { "cart": {items: []} };
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.cart?.items.length > 0) {
+                    const productIds = data.cart.items.map(item => item.product.product_id);
+                    
+                    fetch(`${API_BASE_URL}/product-based-recommendations`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_ids: productIds
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(recommendationsData => {
+                        if (recommendationsData.recommendations && recommendationsData.recommendations.length > 0) {
+                            let recommendationsHTML = `
+                                <div class="cart-recommendations mt-5">
+                                    <h4 class="mb-4">Recommended Based on Your Cart</h4>
+                                    <div class="row">
+                            `;
+                            
+                            recommendationsData.recommendations.slice(0, 4).forEach(product => {
+                                // Skip products already in cart
+                                if (productIds.includes(product.product_id)) return;
+                                
+                                recommendationsHTML += `
+                                    <div class="col-md-3 mb-4">
+                                        <div class="card h-100">
+                                            <div class="position-relative">
+                                                <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                                <span class="position-absolute top-0 start-0 badge bg-warning m-2">Recommended</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">${product.product_name}</h5>
+                                                <p class="card-text">${product.price} $</p>
+                                                <div class="d-flex justify-content-between">
+                                                    <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                                    <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            
+                            recommendationsHTML += '</div></div>';
+                            
+                            // Add recommendations to cart page
+                            document.getElementById('content').innerHTML += recommendationsHTML;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading cart-based recommendations:', error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading cart:', error);
+            });
+        }
+
+        // Load similar products for product details page
+        function loadSimilarProducts(productId) {
+            const similarSection = document.getElementById('similarProductsSection');
+            
+            fetch(`${API_BASE_URL}/product-based-recommendations`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_ids: [productId]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('similarProductsSpinner').classList.add('d-none');
+                
+                const container = document.getElementById('similarProductsContainer');
+                
+                if (data.recommendations && data.recommendations.length > 0) {
+                    let similarProductsHTML = '';
+                    
+                    // Use Carousel to display similar products
+                    similarProductsHTML = `
+                        <div id="similarProductsCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                    `;
+                    
+                    // Split products into groups (4 products per slide)
+                    const chunkSize = 4;
+                    for (let i = 0; i < data.recommendations.length; i += chunkSize) {
+                        const chunk = data.recommendations.slice(i, i + chunkSize);
+                        
+                        similarProductsHTML += `
+                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                <div class="row">
+                        `;
+                        
+                        chunk.forEach(product => {
+                            similarProductsHTML += `
+                                <div class="col-md-3 mb-4">
+                                    <div class="card h-100">
+                                        <div class="position-relative">
+                                            <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                            <span class="position-absolute top-0 start-0 badge bg-info m-2">Similar</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">${product.product_name}</h5>
+                                            <p class="card-text">${product.price} $</p>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                                <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        similarProductsHTML += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    similarProductsHTML += `
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#similarProductsCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#similarProductsCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    container.innerHTML = similarProductsHTML;
+                } else {
+                    container.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <p>No similar products found at the moment. Browse our other products below.</p>
+                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="showProducts()">Browse All Products</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading similar products:', error);
+                document.getElementById('similarProductsSpinner').classList.add('d-none');
+                document.getElementById('similarProductsContainer').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            <p>Unable to load similar products at this time.</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Show recommendations page
+        function showRecommendationsPage() {
+            updateBreadcrumb('Recommendations');
+            
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('Please login to view recommendations');
+                showLogin();
+                return;
+            }
+
+            let recommendationsHTML = `
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="mb-4">Personalized Recommendations</h2>
+                        <p class="lead">Discover products tailored just for you based on your activity and preferences.</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 recommendation-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-friends fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title">Based on Your Profile</h5>
+                                <p class="card-text">Products recommended based on your preferences and activity.</p>
+                                <button class="btn btn-primary" onclick="showUserSuggestions()">View Recommendations</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 recommendation-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-3x mb-3 text-success"></i>
+                                <h5 class="card-title">Similar Users</h5>
+                                <p class="card-text">See what users with similar tastes are interested in.</p>
+                                <button class="btn btn-success" onclick="showSimilarUsersProducts()">View Products</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 recommendation-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-keyboard fa-3x mb-3 text-info"></i>
+                                <h5 class="card-title">Describe What You Need</h5>
+                                <p class="card-text">Tell us what you're looking for and we'll find the perfect products.</p>
+                                <button class="btn btn-info text-white" onclick="showDescriptionRecommendationForm()">Describe & Find</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h4>Not sure what you want?</h4>
+                                <p>Explore users with similar interests to get inspiration</p>
+                                <button class="btn btn-outline-primary" onclick="showSimilarUsers()">
+                                    <i class="fas fa-user-friends me-2"></i>Discover Similar Users
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('content').innerHTML = recommendationsHTML;
+        }
+
+        // Show user-specific suggestions
+        function showUserSuggestions() {
+            updateBreadcrumb('Recommended For You');
+            
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/user-suggestions/${token}`)
+            .then(response => response.json())
+            .then(data => {
+                let recommendationsHTML = `
+                    <h2 class="mb-4">Recommended For You</h2>
+                    <button class="btn btn-secondary mb-3" onclick="showRecommendationsPage()"><i class="fas fa-arrow-left"></i> Back to Recommendations</button>
+                    <p class="text-muted">Based on your profile and activity</p>
+                `;
+                
+                if (data.suggestions && data.suggestions.length > 0) {
+                    recommendationsHTML += '<div class="row">';
+                    
+                    data.suggestions.forEach(product => {
+                        recommendationsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="position-relative">
+                                        <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                        <span class="position-absolute top-0 start-0 badge bg-primary m-2">For You</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    recommendationsHTML += '</div>';
+                } else {
+                    recommendationsHTML += `
+                        <div class="alert alert-info">
+                            <h4>No recommendations yet</h4>
+                            <p>Start browsing products and making purchases to get personalized recommendations.</p>
+                            <button class="btn btn-primary mt-2" onclick="showProducts()">Browse Products</button>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('content').innerHTML = recommendationsHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Show products from similar users
+        function showSimilarUsersProducts() {
+            updateBreadcrumb('Popular Among Similar Users');
+            
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/similar-users-products/${token}`)
+            .then(response => response.json())
+            .then(data => {
+                let productsHTML = `
+                    <h2 class="mb-4">Popular Among Similar Users</h2>
+                    <button class="btn btn-secondary mb-3" onclick="showRecommendationsPage()"><i class="fas fa-arrow-left"></i> Back to Recommendations</button>
+                    <p class="text-muted">Users with similar tastes have shown interest in these products</p>
+                `;
+                
+                if (data.products_from_similar_users && data.products_from_similar_users.length > 0) {
+                    productsHTML += '<div class="row">';
+                    
+                    data.products_from_similar_users.forEach(product => {
+                        productsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="position-relative">
+                                        <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                        <span class="position-absolute top-0 start-0 badge bg-success m-2">Trending</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    productsHTML += '</div>';
+                } else {
+                    productsHTML += `
+                        <div class="alert alert-info">
+                            <h4>No data available yet</h4>
+                            <p>As more users join and interact with products, we'll be able to show you what similar users are interested in.</p>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('content').innerHTML = productsHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Show user's preferred products
+        function showUserPreferredProducts() {
+            updateBreadcrumb('Your Preferred Products');
+            
+            const token = localStorage.getItem('access_token');
+            
+            fetch(`${API_BASE_URL}/user-preferred-products/${token}`)
+            .then(response => response.json())
+            .then(data => {
+                let productsHTML = `
+                    <h2 class="mb-4">Your Preferred Products</h2>
+                    <button class="btn btn-secondary mb-3" onclick="showUserProfile()"><i class="fas fa-arrow-left"></i> Back to Profile</button>
+                `;
+                
+                if (data.preferred_products && data.preferred_products.length > 0) {
+                    productsHTML += '<div class="row">';
+                    
+                    data.preferred_products.forEach(product => {
+                        productsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="position-relative">
+                                        <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                        <span class="position-absolute top-0 start-0 badge bg-warning m-2">Preferred</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    productsHTML += '</div>';
+                } else {
+                    productsHTML += `
+                        <div class="alert alert-info">
+                            <h4>No preferred products yet</h4>
+                            <p>Start interacting with products by viewing, rating, or purchasing to build your preferences.</p>
+                            <button class="btn btn-primary mt-2" onclick="showProducts()">Browse Products</button>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('content').innerHTML = productsHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Show description recommendation form
+        function showDescriptionRecommendationForm() {
+            updateBreadcrumb('Describe Your Needs');
+            
+            const formHTML = `
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Find Products Using Description</h5>
+                        <form id="descriptionRecommendationForm">
+                            <div class="mb-3">
+                                <label for="productDescription" class="form-label">Describe what you're looking for:</label>
+                                <textarea class="form-control" id="productDescription" rows="3" placeholder="e.g. I'm looking for a smartphone with an excellent camera and long battery life..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('content').innerHTML = formHTML;
+            
+            document.getElementById('descriptionRecommendationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const description = document.getElementById('productDescription').value;
+                getDescriptionRecommendations(description);
+            });
+        }
+
+        // Get recommendations based on description
+        function getDescriptionRecommendations(description) {
+            updateBreadcrumb('Description Results');
+            
+            fetch(`${API_BASE_URL}/recommend-describtion-user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ description: description })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let recommendationsHTML = `
+                    <h2 class="mb-4">Products Suggested Based on Your Description</h2>
+                    <button class="btn btn-secondary mb-3" onclick="showDescriptionRecommendationForm()"><i class="fas fa-arrow-left"></i> Back</button>
+                `;
+                
+                if (data.products && data.products.length > 0) {
+                    recommendationsHTML += '<div class="row">';
+                    
+                    data.products.forEach(product => {
+                        recommendationsHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    recommendationsHTML += '</div>';
+                } else {
+                    recommendationsHTML += '<div class="alert alert-info">No products found matching your description.</div>';
+                }
+                
+                document.getElementById('content').innerHTML = recommendationsHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Show similar users
+        function showSimilarUsers() {
+            updateBreadcrumb('Similar Users');
+            
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('Please login to view similar users');
+                showLogin();
+                return;
+            }
+            
+            fetch(`${API_BASE_URL}/similar-users/${token}`)
+            .then(response => response.json())
+            .then(data => {
+                let similarUsersHTML = `
+                    <h2 class="mb-4">Users with Similar Interests</h2>
+                    <div class="row">
+                `;
+                
+                if (data.users && data.users.length > 0) {
+                    data.users.forEach(user => {
+                        similarUsersHTML += `
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 text-center">
+                                    <img src="${getUserImageUrl(user.user_image)}" class="card-img-top user-img mx-auto mt-3" alt="${user.username}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${user.username}</h5>
+                                        <p class="card-text">Similarity: ${(user.similarity_score * 100).toFixed(0)}%</p>
+                                        <p class="card-text"><small class="text-muted">${user.age ? 'Age: ' + user.age : ''} ${user.location ? ' - Location: ' + user.location : ''}</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    similarUsersHTML = '<div class="alert alert-info">No similar users at this time.</div>';
+                }
+                
+                similarUsersHTML += '</div>';
+                document.getElementById('content').innerHTML = similarUsersHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Search products
+        function searchProducts(query, page = 1) {
+            updateBreadcrumb('Search Results');
+            
+            if (!query || query.trim() === '') {
+                alert('Please enter a search term');
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/products/search?q=${encodeURIComponent(query)}&limit=${productsPerPage}&offset=${(page - 1) * productsPerPage}`)
+            .then(response => response.json())
+            .then(data => {
+                let searchHTML = `
+                    <h2 class="mb-4">Search Results for: "${query}"</h2>
+                    <button class="btn btn-secondary mb-3" onclick="showHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+                `;
+                
+                if (data.products && data.products.length > 0) {
+                    const totalResults = data.total_count || data.products.length;
+                    searchHTML += `<div class="mb-3">Found ${totalResults} products</div>`;
+                    searchHTML += '<div class="row">';
+                    
+                    data.products.forEach(product => {
+                        searchHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <img src="${getProductImageUrl(product.product_image)}" class="card-img-top product-img" alt="${product.product_name}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.product_name}</h5>
+                                        <p class="card-text">${product.price} $</p>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-primary" onclick="showProductDetails(${product.product_id})">Details</button>
+                                            <button class="btn btn-success" onclick="addToCart(${product.product_id})"><i class="fas fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    searchHTML += '</div>';
+                    
+                    // Add pagination for search results
+                    if (totalResults > productsPerPage) {
+                        const totalPages = Math.ceil(totalResults / productsPerPage);
+                        searchHTML += generateSearchPagination(query, page, totalPages, totalResults);
+                    }
+                } else {
+                    searchHTML += '<div class="alert alert-info">No products found matching your search.</div>';
+                }
+                
+                document.getElementById('content').innerHTML = searchHTML;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            });
+        }
+
+        // Generate pagination
+        function generatePagination() {
+            const totalPages = Math.ceil(totalProducts / productsPerPage);
+            
+            if (totalPages <= 1) {
+                return ''; // No need to show pagination if only one page
+            }
+            
+            let paginationHTML = `
+                <nav aria-label="Products pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+            `;
+            
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="showProducts(${currentPage - 1})">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="fas fa-chevron-left"></i> Previous</span>
+                    </li>
+                `;
+            }
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            // Add first page button if needed
+            if (startPage > 1) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="showProducts(1)">1</a>
+                    </li>
+                `;
+                if (startPage > 2) {
+                    paginationHTML += `
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `;
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">${i}</span>
+                        </li>
+                    `;
+                } else {
+                    paginationHTML += `
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" onclick="showProducts(${i})">${i}</a>
+                        </li>
+                    `;
+                }
+            }
+            
+            // Add last page button if needed
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `;
+                }
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="showProducts(${totalPages})">${totalPages}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="showProducts(${currentPage + 1})">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item disabled">
+                        <span class="page-link">Next <i class="fas fa-chevron-right"></i></span>
+                    </li>
+                `;
+            }
+            
+            paginationHTML += `
+                    </ul>
+                </nav>
+                <div class="text-center text-muted mt-2">
+                    Showing ${((currentPage - 1) * productsPerPage) + 1} to ${Math.min(currentPage * productsPerPage, totalProducts)} of ${totalProducts} products
+                </div>
+            `;
+            
+            return paginationHTML;
+        }
+
+        // Generate search pagination
+        function generateSearchPagination(query, currentPage, totalPages, totalResults) {
+            let paginationHTML = `
+                <nav aria-label="Search results pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+            `;
+            
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="searchProducts('${query}', ${currentPage - 1})">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="fas fa-chevron-left"></i> Previous</span>
+                    </li>
+                `;
+            }
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            // Add first page button if needed
+            if (startPage > 1) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="searchProducts('${query}', 1)">1</a>
+                    </li>
+                `;
+                if (startPage > 2) {
+                    paginationHTML += `
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `;
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">${i}</span>
+                        </li>
+                    `;
+                } else {
+                    paginationHTML += `
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" onclick="searchProducts('${query}', ${i})">${i}</a>
+                        </li>
+                    `;
+                }
+            }
+            
+            // Add last page button if needed
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `;
+                }
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="searchProducts('${query}', ${totalPages})">${totalPages}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="searchProducts('${query}', ${currentPage + 1})">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item disabled">
+                        <span class="page-link">Next <i class="fas fa-chevron-right"></i></span>
+                    </li>
+                `;
+            }
+            
+            paginationHTML += `
+                    </ul>
+                </nav>
+                <div class="text-center text-muted mt-2">
+                    Showing ${((currentPage - 1) * productsPerPage) + 1} to ${Math.min(currentPage * productsPerPage, totalResults)} of ${totalResults} results
+                </div>
+            `;
+            
+            return paginationHTML;
+        }
+    </script>
+</body>
+</html>

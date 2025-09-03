@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Customer Behavior Analysis System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --secondary-light: #34495e;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: var(--secondary);
+            color: white;
+            z-index: 1000;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-brand h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .config-panel {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .config-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .config-label {
+            width: 180px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .config-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .config-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .config-btn {
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .config-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .category-btn {
+            padding: 12px 20px;
+            background-color: var(--light);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .endpoint-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .method {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .get {
+            background-color: #61affe;
+            color: white;
+        }
+
+        .post {
+            background-color: #49cc90;
+            color: white;
+        }
+
+        .delete {
+            background-color: #f93e3e;
+            color: white;
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            background-color: #f6f8fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .form-container {
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .test-btn {
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .test-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .result-container {
+            margin-top: 20px;
+        }
+
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background-color: #e2e8f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background-color: #d1d9e6;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 18px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .success {
+            border-left: 4px solid var(--success);
+        }
+
+        .error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .smart-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: white;
+            font-size: 1rem;
+        }
+
+        .data-loading {
+            color: var(--primary);
+            font-style: italic;
+        }
+
+        .data-info {
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin-top: 6px;
+        }
+
+        .response-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-success {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .json-key {
+            color: #881391;
+        }
+
+        .json-string {
+            color: #c41a16;
+        }
+
+        .json-number {
+            color: #1c00cf;
+        }
+
+        .json-boolean {
+            color: #0d22aa;
+        }
+
+        .json-null {
+            color: #808080;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .dark-mode {
+            --background: #1a1a2e;
+            --card-bg: #16213e;
+            --text-primary: #f0f0f0;
+            --text-secondary: #cccccc;
+            --light: #222831;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .similarity-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--info));
+            color: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .recommendation-tabs .nav-link {
+            border: none;
+            padding: 1rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .recommendation-tabs .nav-link.active {
+            background: transparent;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .filter-bar {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .api-status {
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .status-connected {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-disconnected {
+            background: var(--danger);
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .endpoints {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar-brand, .sidebar-menu span {
+                display: none;
+            }
+
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 1.5rem;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .endpoints {
+                grid-template-columns: 1fr;
+            }
+
+            .config-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .config-label {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .categories {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+        }
+
+        .similarity-result {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--success);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 5px;
+        }
+
+        .recommendation-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+        }
+
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .score-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h3>Customer Behavior Analysis</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li><a href="#" data-section="api-testing"><i class="fas fa-code"></i> <span>API Testing</span></a></li>
+            <li><a href="#" data-section="analytics"><i class="fas fa-chart-line"></i> <span>Analytics</span></a></li>
+            <!-- <li><a href="#" data-section="recommendations"><i class="fas fa-robot"></i> <span>Recommendations</span></a></li> -->
+            <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2 class="mb-4">Dashboard Overview</h2>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card stat-card bg-primary text-white">
+                        <i class="fas fa-users"></i>
+                        <h2 id="totalUsers">0</h2>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-success text-white">
+                        <i class="fas fa-box"></i>
+                        <h2 id="totalProducts">0</h2>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-info text-white">
+                        <i class="fas fa-list"></i>
+                        <h2 id="totalCategories">0</h2>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-warning text-white">
+                        <i class="fas fa-chart-bar"></i>
+                        <h2 id="totalInteractions">0</h2>
+                        <p>Total Interactions</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">API Usage Statistics</h5>
+                            <div class="chart-container">
+                                <canvas id="apiUsageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Response Status Distribution</h5>
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent API Tests</h5>
+                            <div id="recentTests">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">System Health</h5>
+                            <div class="mb-3">
+                                <label class="form-label">API Connection</label>
+                                <div class="api-status status-connected">Connected</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Response Time</label>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 75%">75ms</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Success Rate</label>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 92%">92%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Testing Section -->
+        <div id="api-testing"  class="section">
+            <h2 class="mb-4">API Testing Interface</h2>
+
+            <div class="config-panel" style="display: none;">
+                <div class="config-row">
+                    <span class="config-label">Backend API URL:</span>
+                    <input type="text" id="baseURL" class="config-input" value="http://127.0.0.1:5000/api">
+                </div>
+                <div class="config-row">
+                    <span class="config-label">Auth Token (optional):</span>
+                    <input type="text" id="authToken" class="config-input" placeholder="Enter authentication token">
+                </div>
+                <div class="config-row">
+                    <button id="saveConfig" class="config-btn">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </div>
+
+            <div class="categories">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-globe"></i> All Endpoints
+                </button>
+                <button class="category-btn" data-category="auth">
+                    <i class="fas fa-key"></i> Authentication
+                </button>
+                <button class="category-btn" data-category="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="category-btn" data-category="products">
+                    <i class="fas fa-box"></i> Products
+                </button>
+                <button class="category-btn" data-category="categories">
+                    <i class="fas fa-tags"></i> Categories
+                </button>
+                <button class="category-btn" data-category="reviews">
+                    <i class="fas fa-star"></i> Reviews
+                </button>
+                <button class="category-btn" data-category="cart">
+                    <i class="fas fa-shopping-cart"></i> Shopping Cart
+                </button>
+                <button class="category-btn" data-category="recommendations">
+                    <i class="fas fa-lightbulb"></i> Recommendations
+                </button>
+                <button class="category-btn" data-category="analytics">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Testing endpoint...</p>
+            </div>
+
+            <div class="endpoints" id="endpointsContainer">
+                <!-- Will be populated dynamically using JavaScript -->
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics" class="section">
+            <h2 class="mb-4">Customer Behavior Analytics</h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">User Interaction Patterns</h5>
+                            <div class="chart-container">
+                                <canvas id="interactionPatternsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Purchase Funnel Analysis</h5>
+                            <div class="chart-container">
+                                <canvas id="purchaseFunnelChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Customer Segmentation</h5>
+                            <div class="chart-container">
+                                <canvas id="segmentationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Top Performing Products</h5>
+                            <div id="topProducts">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">User Demographics</h5>
+                            <div class="chart-container">
+                                <canvas id="demographicsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+
+        <!-- Settings Section -->
+        <div id="settings" class="section">
+            <h2 class="mb-4">System Settings</h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">API Configuration</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Base URL</label>
+                                <input type="text" class="form-control" id="settingsBaseURL" value="http://127.0.0.1:5000/api">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-control" id="settingsApiKey" placeholder="Enter API key">
+                            </div>
+                            <button class="btn btn-primary" id="saveSettings">Save Configuration</button>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">System Health</h5>
+                            <div class="mb-3">
+                                <label class="form-label">CPU Usage</label>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 45%">45%</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Memory Usage</label>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 62%">62%</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Storage Space</label>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 78%">78%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recommendation Settings</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Default Algorithm</label>
+                                <select class="form-select" id="defaultAlgorithm">
+                                    <option value="svd" selected>SVD</option>
+                                    <option value="knn">KNN</option>
+                                    <option value="deeplearning">Deep Learning</option>
+                                    <option value="contentbased">Content Based</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Number of Recommendations</label>
+                                <input type="number" class="form-control" id="recommendationCount" value="10">
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="realTimeSwitch" checked>
+                                <label class="form-check-label" for="realTimeSwitch">Real-time Recommendations</label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="diversitySwitch" checked>
+                                <label class="form-check-label" for="diversitySwitch">Enhance Diversity</label>
+                            </div>
+                            <button class="btn btn-primary" id="saveRecommendationSettings">Save Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Data Management</h5>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" id="exportProducts">Export Products Data</button>
+                                <button class="btn btn-outline-primary" id="exportUsers">Export Users Data</button>
+                                <button class="btn btn-outline-primary" id="exportInteractions">Export Interactions Data</button>
+                                <button class="btn btn-outline-danger" id="purgeData">Purge Old Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Similarity Calculation Modal -->
+    <div class="modal fade" id="similarityModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Similarity Calculation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">First User</label>
+                        <select class="form-select" id="similarityUser1">
+                            <option value="" selected>Select user...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Second User</label>
+                        <select class="form-select" id="similarityUser2">
+                            <option value="" selected>Select user...</option>
+                        </select>
+                    </div>
+                    <div id="similarityResult" class="similarity-score">
+                        Similarity Score: Not available
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="calculateSimilarity">Calculate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // تعريف جميع نقاط النهاية لاختبارها
+        const endpoints = [
+            // نقاط نهاية المصادقة
+            {
+                name: "Register New User",
+                url: "/signup",
+                method: "POST",
+                category: "auth",
+                formData: true,
+                inputs: [
+                    { name: "username", label: "Username", type: "text", required: true },
+                    { name: "email", label: "Email", type: "email", required: true },
+                    { name: "password", label: "Password", type: "password", required: true },
+                    { name: "age", label: "Age", type: "number" },
+                    { name: "gender", label: "Gender", type: "select", options: ["male", "female"] },
+                    { name: "location", label: "Location", type: "text" },
+                    { name: "user_image", label: "User Image", type: "file" }
+                ]
+            },
+            {
+                name: "Login",
+                url: "/login",
+                method: "POST",
+                category: "auth",
+                inputs: [
+                    { name: "identifier", label: "Username or Email", type: "text", required: true },
+                    { name: "password", label: "Password", type: "password", required: true }
+                ]
+            },
+
+            // نقاط نهاية المستخدمين
+            {
+                name: "Get User Data",
+                url: "/user/{id}",
+                method: "GET",
+                category: "users",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Update User Profile",
+                url: "/user/updateprofile",
+                method: "POST",
+                category: "users",
+                formData: true,
+                inputs: [
+                    { name: "user_id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "username", label: "Username", type: "text" },
+                    { name: "email", label: "Email", type: "email" },
+                    { name: "age", label: "Age", type: "number" },
+                    { name: "gender", label: "Gender", type: "select", options: ["male", "female"] },
+                    { name: "location", label: "Location", type: "text" },
+                    { name: "user_image", label: "User Image", type: "file" }
+                ]
+            },
+
+            // نقاط نهاية المنتجات
+            {
+                name: "Get All Products",
+                url: "/products",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "limit", label: "Limit", type: "number" }
+                ]
+            },
+            {
+                name: "Get Specific Product",
+                url: "/products/{id}",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "id", label: "Product ID", type: "select", options: [], required: true, dataSource: "products" }
+                ]
+            },
+            {
+                name: "Search Products",
+                url: "/products/search?q={q}",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "q", label: "Search Query", type: "text", required: true }
+                ]
+            },
+            {
+                name: "Products by Category",
+                url: "/products/category/{id}",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "id", label: "Category ID", type: "select", options: [], required: true, dataSource: "categories" }
+                ]
+            },
+            {
+                name: "Products by Country",
+                url: "/products/country/{country}",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "country", label: "Country Name", type: "text", required: true }
+                ]
+            },
+            {
+                name: "Products by Brand",
+                url: "/products/brand/{brand}",
+                method: "GET",
+                category: "products",
+                inputs: [
+                    { name: "brand", label: "Brand Name", type: "text", required: true }
+                ]
+            },
+            {
+                name: "Add New Product",
+                url: "/products",
+                method: "POST",
+                category: "products",
+                formData: true,
+                inputs: [
+                    { name: "product_name", label: "Product Name", type: "text", required: true },
+                    { name: "description", label: "Description", type: "text", required: true },
+                    { name: "price", label: "Price", type: "number", required: true },
+                    { name: "country_made", label: "Country of Origin", type: "text", required: true },
+                    { name: "product_image", label: "Product Image", type: "file" },
+                    { name: "brand", label: "Brand", type: "text", required: true },
+                    { name: "cat_id", label: "Category ID", type: "select", options: [], required: true, dataSource: "categories" }
+                ]
+            },
+
+            // نقاط نهاية الفئات
+            {
+                name: "Get All Categories",
+                url: "/categories",
+                method: "GET",
+                category: "categories"
+            },
+            {
+                name: "Get Specific Category",
+                url: "/categories/{id}",
+                method: "GET",
+                category: "categories",
+                inputs: [
+                    { name: "id", label: "Category ID", type: "select", options: [], required: true, dataSource: "categories" }
+                ]
+            },
+            {
+                name: "Add New Category",
+                url: "/categories",
+                method: "POST",
+                category: "categories",
+                formData: true,
+                inputs: [
+                    { name: "Cat_name", label: "Category Name", type: "text", required: true },
+                    { name: "Description", label: "Description", type: "text" },
+                    { name: "Cat_image", label: "Category Image", type: "file" }
+                ]
+            },
+            {
+                name: "Update Category",
+                url: "/categories/update_category",
+                method: "POST",
+                category: "categories",
+                formData: true,
+                inputs: [
+                    { name: "Cat_id", label: "Category ID", type: "select", options: [], required: true, dataSource: "categories" },
+                    { name: "Cat_name", label: "Category Name", type: "text" },
+                    { name: "Description", label: "Description", type: "text" },
+                    { name: "Cat_image", label: "Category Image", type: "file" }
+                ]
+            },
+
+            // نقاط نهاية التقييمات
+            {
+                name: "Add Review",
+                url: "/reviews",
+                method: "POST",
+                category: "reviews",
+                inputs: [
+                    { name: "user_id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "product_id", label: "Product ID", type: "select", options: [], required: true, dataSource: "products" },
+                    { name: "rating", label: "Rating (1-5)", type: "number", min: 1, max: 5, required: true },
+                    { name: "review_text", label: "Review Text", type: "textarea" }
+                ]
+            },
+            {
+                name: "User Reviews",
+                url: "/reviews/user/{id}",
+                method: "GET",
+                category: "reviews",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Product Reviews",
+                url: "/reviews/product/{id}",
+                method: "GET",
+                category: "reviews",
+                inputs: [
+                    { name: "id", label: "Product ID", type: "select", options: [], required: true, dataSource: "products" }
+                ]
+            },
+
+            // نقاط نهاية عربة التسوق
+            {
+                name: "Add to Cart",
+                url: "/cart",
+                method: "POST",
+                category: "cart",
+                inputs: [
+                    { name: "user_id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "product_id", label: "Product ID", type: "select", options: [], required: true, dataSource: "products" },
+                    { name: "quantity", label: "Quantity", type: "number", required: true, min: 1 }
+                ]
+            },
+            {
+                name: "Get Cart",
+                url: "/cart/{id}",
+                method: "GET",
+                category: "cart",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Purchase Cart",
+                url: "/cart/purchase",
+                method: "POST",
+                category: "cart",
+                inputs: [
+                    { name: "user_id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+
+            // نقاط نهاية التوصيات
+            {
+                name: "User-Based Filtering",
+                url: "/similar-users-products/{id}",
+                method: "GET",
+                category: "recommendations",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Product-Based Recommendations",
+                url: "/product-based-recommendations",
+                method: "POST",
+                category: "recommendations",
+                jsonData: true,
+                inputs: [
+                    {
+                        name: "product_ids",
+                        label: "Product ID (single or list)",
+                        type: "text",
+                        required: true,
+                        placeholder: "123 or [123, 456]",
+                        description: "Enter a single product ID (number) or a list of IDs in JSON format like [1, 2, 3]"
+                    }
+                ]
+            },
+            {
+                name: "Collaborative Filtering",
+                url: "/user-suggestions/{id}",
+                method: "GET",
+                category: "recommendations",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Description-Based Recommendations",
+                url: "/recommend-describtion-user",
+                method: "POST",
+                category: "recommendations",
+                jsonData: true,
+                inputs: [
+                    { name: "description", label: "Description", type: "textarea", required: true }
+                ]
+            },
+            {
+                name: "Feature-Based KNN Recommendations",
+                url: "/feature-based/knn",
+                method: "POST",
+                category: "recommendations",
+                jsonData: true,
+                inputs: [
+                    { name: "entity_type", label: "Entity Type", type: "select", options: ["product", "user"], required: true, value: "product" },
+                    { name: "column_name", label: "Column Name", type: "text", required: true, placeholder: "category or brand" },
+                    { name: "value", label: "Value", type: "text", required: true, placeholder: "Electronics or Nike" },
+                    { 
+                        name: "features", 
+                        label: "Features (similarity attributes)", 
+                        type: "text", 
+                        required: true, 
+                        placeholder: '["price", "rating", "brand"]',
+                        description: "Enter a JSON array containing column names to use for similarity calculation"
+                    }
+                ]
+            },
+            {
+                name: "Content-Based Cosine Recommendations",
+                url: "/content-based/cosine",
+                method: "POST",
+                category: "recommendations",
+                jsonData: true,
+                inputs: [
+                    { name: "column_name", label: "Column Name", type: "text", required: true, placeholder: "category or brand" },
+                    { name: "value", label: "Value", type: "text", required: true, placeholder: "Electronics or Nike" },
+                    { 
+                        name: "features", 
+                        label: "Features (similarity attributes)", 
+                        type: "text", 
+                        required: true, 
+                        placeholder: '["price", "rating", "category"]',
+                        description: "Enter a JSON array containing column names to use for similarity calculation"
+                    }
+                ]
+            },
+            {
+                name: "Most Popular Products",
+                url: "/most-popular/{n}",
+                method: "GET",
+                category: "recommendations",
+                inputs: [
+                    { name: "n", label: "Number of Products", type: "number", required: true, min: 1 }
+                ]
+            },
+            {
+                name: "Image-Based Recommendations",
+                url: "/image/recommend",
+                method: "POST",
+                category: "recommendations",
+                jsonData: true,
+                inputs: [
+                    { name: "image_name", label: "Image Name", type: "text", required: true },
+                    { name: "top_n", label: "Number of Recommendations", type: "number", value: 3, min: 1 }
+                ]
+            },
+
+            // نقاط نهاية التحليلات
+            {
+                name: "User Interests",
+                url: "/user-interests/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Cluster Data",
+                url: "/cluster-data",
+                method: "POST",
+                category: "analytics",
+                jsonData: true,
+                inputs: [
+                    { name: "df", label: "Data Type", type: "select", options: ["users", "products"], required: true },
+                    { name: "features", label: "Features (array)", type: "text", required: true, placeholder: '["age", "gender"]' },
+                    { name: "n_clusters", label: "Number of Clusters", type: "number", value: 5 },
+                    { name: "auto_optimize_k", label: "Auto Optimize", type: "select", options: ["true", "false"], value: "false" },
+                    { name: "max_k", label: "Maximum Clusters", type: "number", value: 15 }
+                ]
+            },
+            {
+                name: "User Interactions by Type",
+                url: "/user-interactions-by-type/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "interaction_type", label: "Interaction Type", type: "text", required: true }
+                ]
+            },
+            {
+                name: "User Interaction Details",
+                url: "/user-interactions-details/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "User Preferred Products",
+                url: "/user-preferred-products/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "User Interacted Products",
+                url: "/user-interacted-products/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "User High-Rated Products",
+                url: "/user-high-rated/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "min_rating", label: "Minimum Rating", type: "number", value: 3 }
+                ]
+            },
+            {
+                name: "Similar Users",
+                url: "/similar-users/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" },
+                    { name: "n_recommendations", label: "Number of Recommendations", type: "number", value: 5 }
+                ]
+            },
+            {
+                name: "Similar Users (Feature-Based)",
+                url: "/similar-users_features/{id}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { name: "id", label: "User ID", type: "select", options: [], required: true, dataSource: "users" }
+                ]
+            },
+            {
+                name: "Calculate Similarity Between Users",
+                url: "/similarity-between-users/{user_id1}/{user_id2}",
+                method: "GET",
+                category: "analytics",
+                inputs: [
+                    { 
+                        name: "user_id1", 
+                        label: "First User ID", 
+                        type: "select", 
+                        options: [], 
+                        required: true,
+                        dataSource: "users",
+                        description: "Enter the first user ID"
+                    },
+                    { 
+                        name: "user_id2", 
+                        label: "Second User ID", 
+                        type: "select", 
+                        options: [], 
+                        required: true,
+                        dataSource: "users",
+                        description: "Enter the second user ID"
+                    }
+                ]
+            }
+        ];
+
+        // إنشاء عناصر واجهة المستخدم لنقاط النهاية
+        const endpointsContainer = document.getElementById('endpointsContainer');
+        const loadingElement = document.getElementById('loading');
+        const baseURLInput = document.getElementById('baseURL');
+        const authTokenInput = document.getElementById('authToken');
+        const saveConfigBtn = document.getElementById('saveConfig');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // متغيرات لتخزين البيانات
+        let productsData = [];
+        let categoriesData = [];
+        let usersData = [];
+
+        // تهيئة واجهة المستخدم
+        function initializeUI() {
+            // تحميل الإعدادات أولاً
+            setupConfig();
+            
+            // ثم تحميل البيانات
+            loadAllData().then(() => {
+                // بعد تحميل البيانات، عرض نقاط النهاية
+                renderEndpoints('all');
+                setupCategoryFilters();
+                setupThemeToggle();
+                setupNavigation();
+                loadDashboardStats();
+            });
+        }
+
+        // إعداد التنقل بين الأقسام
+        function setupNavigation() {
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            const sections = document.querySelectorAll('.section');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    menuLinks.forEach(item => item.classList.remove('active'));
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show the corresponding section
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                    
+                    // Load data for the active section
+                    switch(sectionId) {
+                        case 'dashboard':
+                            loadDashboardStats();
+                            break;
+                        case 'api-testing':
+                            // Already handled by the existing code
+                            break;
+                        case 'analytics':
+                            loadAnalyticsData();
+                            break;
+                        case 'recommendations':
+                            loadUsersForRecommendations();
+                            loadProductsForRecommendations();
+                            break;
+                        case 'settings':
+                            loadSettings();
+                            break;
+                    }
+                });
+            });
+        }
+
+        // إعداد عوامل التصفية حسب الفئة
+        function setupCategoryFilters() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    const category = button.getAttribute('data-category');
+                    renderEndpoints(category);
+                });
+            });
+        }
+
+        // إعداد تبديل الوضع الليلي
+        function setupThemeToggle() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+
+        // إعداد الإعدادات
+        function setupConfig() {
+            // تحميل الإعدادات المحفوظة
+            const savedBaseURL = localStorage.getItem('apiBaseURL');
+            const savedAuthToken = localStorage.getItem('apiAuthToken');
+
+            if (savedBaseURL) baseURLInput.value = savedBaseURL;
+            if (savedAuthToken) authTokenInput.value = savedAuthToken;
+
+            // حفظ الإعدادات
+            saveConfigBtn.addEventListener('click', () => {
+                localStorage.setItem('apiBaseURL', baseURLInput.value);
+                localStorage.setItem('apiAuthToken', authTokenInput.value);
+                alert('Settings saved successfully');
+            });
+        }
+
+        // تحميل جميع البيانات من الخادم
+        async function loadAllData() {
+            try {
+                const baseURL = localStorage.getItem('apiBaseURL') || baseURLInput.value;
+                
+                // تحميل المنتجات
+                const productsResponse = await fetch(`${baseURL}/products`);
+                const productsResult = await productsResponse.json();
+                productsData = productsResult.products || [];
+                
+                // تحميل الفئات
+                const categoriesResponse = await fetch(`${baseURL}/categories`);
+                const categoriesResult = await categoriesResponse.json();
+                categoriesData = categoriesResult.categories || [];
+                
+                // تحميل المستخدمين
+                const userResponse = await fetch(`${baseURL}/users`);
+                const userResult = await userResponse.json();
+                usersData = userResult.users || [];
+                
+                console.log(`Data loaded: ${productsData.length} products, ${categoriesData.length} categories, ${usersData.length} users`);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // تحميل إحصائيات لوحة التحكم
+        async function loadDashboardStats() {
+            try {
+                // Update statistics
+                document.getElementById('totalUsers').textContent = usersData.length;
+                document.getElementById('totalProducts').textContent = productsData.length;
+                document.getElementById('totalCategories').textContent = categoriesData.length;
+                
+                // Generate charts
+                generateCharts();
+                
+                // Load recent tests
+                loadRecentTests();
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // توليد الرسوم البيانية
+        function generateCharts() {
+            // API Usage Chart
+            const apiUsageCtx = document.getElementById('apiUsageChart').getContext('2d');
+            new Chart(apiUsageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'API Calls',
+                            data: [65, 59, 80, 81, 56, 55, 72, 78, 80, 85, 90, 95],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Success', 'Errors', 'Pending'],
+                    datasets: [{
+                        data: [85, 10, 5],
+                        backgroundColor: ['#27ae60', '#e74c3c', '#f39c12']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // تحميل الاختبارات الحديثة
+        function loadRecentTests() {
+            const recentTests = [
+                { endpoint: '/products', method: 'GET', status: 'Success', time: '2 mins ago' },
+                { endpoint: '/user/123', method: 'GET', status: 'Success', time: '5 mins ago' },
+                { endpoint: '/login', method: 'POST', status: 'Error', time: '10 mins ago' },
+                { endpoint: '/cart', method: 'POST', status: 'Success', time: '15 mins ago' }
+            ];
+            
+            let testsHtml = '';
+            recentTests.forEach(test => {
+                testsHtml += `
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                        <div>
+                            <span class="badge ${test.status === 'Success' ? 'bg-success' : 'bg-danger'} me-2">${test.method}</span>
+                            <span>${test.endpoint}</span>
+                        </div>
+                        <small class="text-muted">${test.time}</small>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('recentTests').innerHTML = testsHtml;
+        }
+
+        // تحميل بيانات التحليلات
+        async function loadAnalyticsData() {
+            try {
+                // Interaction Patterns Chart
+                const interactionCtx = document.getElementById('interactionPatternsChart').getContext('2d');
+                new Chart(interactionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Views', 'Add to Cart', 'Purchases', 'Reviews'],
+                        datasets: [{
+                            label: 'Interaction Count',
+                            data: [65, 59, 80, 81],
+                            backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#f39c12']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+                // Purchase Funnel Chart
+                const funnelCtx = document.getElementById('purchaseFunnelChart').getContext('2d');
+                new Chart(funnelCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Visitors', 'Interested', 'Added to Cart', 'Purchased'],
+                        datasets: [{
+                            data: [100, 65, 40, 25],
+                            backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+                // Segmentation Chart
+                const segmentationCtx = document.getElementById('segmentationChart').getContext('2d');
+                new Chart(segmentationCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Age 18-25', 'Age 26-35', 'Age 36-45', 'Age 46-55', 'Age 55+'],
+                        datasets: [{
+                            label: 'Interaction Rate',
+                            data: [65, 59, 90, 81, 56],
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            pointBackgroundColor: 'rgba(52, 152, 219, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+                // Demographics Chart
+                const demographicsCtx = document.getElementById('demographicsChart').getContext('2d');
+                new Chart(demographicsCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Male', 'Female', 'Other'],
+                        datasets: [{
+                            data: [55, 40, 5],
+                            backgroundColor: ['#3498db', '#e74c3c', '#f39c12']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error loading analytics data:', error);
+            }
+        }
+
+        // تحميل المستخدمين للتوصيات
+        async function loadUsersForRecommendations() {
+            try {
+                const svdUserSelect = document.getElementById('svdUserSelect');
+                const knnUserSelect = document.getElementById('knnUserSelect');
+                const suUserSelect = document.getElementById('suUserSelect');
+                
+                // مسح الخيارات الحالية
+                svdUserSelect.innerHTML = '<option value="" selected>Select user...</option>';
+                knnUserSelect.innerHTML = '<option value="" selected>Select user...</option>';
+                suUserSelect.innerHTML = '<option value="" selected>Select user...</option>';
+                
+                if (usersData && usersData.length > 0) {
+                    usersData.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.user_id;
+                        option.textContent = `${user.username} (${user.email})`;
+                        
+                        svdUserSelect.appendChild(option.cloneNode(true));
+                        knnUserSelect.appendChild(option.cloneNode(true));
+                        suUserSelect.appendChild(option.cloneNode(true));
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading users for recommendations:', error);
+            }
+        }
+
+        // تحميل المنتجات للتوصيات
+        async function loadProductsForRecommendations() {
+            try {
+                const svdProductSelect = document.getElementById('svdProductSelect');
+                const knnProductSelect = document.getElementById('knnProductSelect');
+                const cbProductSelect = document.getElementById('cbProductSelect');
+                
+                // مسح الخيارات الحالية
+                svdProductSelect.innerHTML = '<option value="" selected>Select product...</option>';
+                knnProductSelect.innerHTML = '<option value="" selected>Select product...</option>';
+                cbProductSelect.innerHTML = '<option value="" selected>Select product...</option>';
+                
+                if (productsData && productsData.length > 0) {
+                    productsData.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.product_id;
+                        option.textContent = product.product_name;
+                        
+                        svdProductSelect.appendChild(option.cloneNode(true));
+                        knnProductSelect.appendChild(option.cloneNode(true));
+                        cbProductSelect.appendChild(option.cloneNode(true));
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading products for recommendations:', error);
+            }
+        }
+
+        // تحميل الإعدادات
+        async function loadSettings() {
+            try {
+                // تحميل إعدادات API من localStorage إذا كانت موجودة
+                const savedBaseURL = localStorage.getItem('apiBaseURL');
+                const savedApiKey = localStorage.getItem('apiAuthToken');
+                
+                if (savedBaseURL) {
+                    document.getElementById('settingsBaseURL').value = savedBaseURL;
+                }
+                
+                if (savedApiKey) {
+                    document.getElementById('settingsApiKey').value = savedApiKey;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // عرض نقاط النهاية حسب الفئة
+        function renderEndpoints(category) {
+            endpointsContainer.innerHTML = '';
+
+            const filteredEndpoints = category === 'all'
+                ? endpoints
+                : endpoints.filter(endpoint => endpoint.category === category);
+
+            filteredEndpoints.forEach(endpoint => {
+                const endpointCard = createEndpointCard(endpoint);
+                endpointsContainer.appendChild(endpointCard);
+            });
+        }
+
+        // إنشاء بطاقة نقطة النهاية
+        function createEndpointCard(endpoint) {
+            const card = document.createElement('div');
+            card.className = 'endpoint-card';
+
+            const header = document.createElement('div');
+            header.className = 'endpoint-header';
+
+            const title = document.createElement('h3');
+            title.textContent = endpoint.name;
+
+            const method = document.createElement('span');
+            method.className = `method ${endpoint.method.toLowerCase()}`;
+            method.textContent = endpoint.method;
+
+            header.appendChild(title);
+            header.appendChild(method);
+
+            const url = document.createElement('div');
+            url.className = 'endpoint-url';
+            url.textContent = endpoint.url;
+
+            const formContainer = document.createElement('div');
+            formContainer.className = 'form-container';
+
+            // إنشاء حقول الإدخال إذا وجدت
+            if (endpoint.inputs && endpoint.inputs.length > 0) {
+                endpoint.inputs.forEach(input => {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.className = 'form-label';
+                    label.textContent = input.label;
+                    if (input.required) label.textContent += ' *';
+
+                    let inputElement;
+
+                    if (input.dataSource) {
+                        // إنشاء قائمة منسدلة مع البيانات
+                        inputElement = document.createElement('select');
+                        inputElement.className = 'smart-select';
+                        inputElement.name = input.name;
+                        
+                        // إضافة خيار افتراضي
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.textContent = '-- Select --';
+                        inputElement.appendChild(defaultOption);
+                        
+                        // ملء القائمة بالبيانات
+                        let data = [];
+                        if (input.dataSource === 'products') data = productsData;
+                        else if (input.dataSource === 'categories') data = categoriesData;
+                        else if (input.dataSource === 'users') data = usersData;
+                        
+                        if (data.length > 0) {
+                            data.forEach(item => {
+                                const option = document.createElement('option');
+                                option.value = item[input.dataSource === 'users' ? 'user_id' : input.dataSource === 'products' ? 'product_id' : 'cat_id'];
+                                option.textContent = item[input.dataSource === 'users' ? 'user_name' : input.dataSource === 'products' ? 'product_id' : 'cat_name'];
+                                inputElement.appendChild(option);
+                            });
+                        } else {
+                            const loadingOption = document.createElement('option');
+                            loadingOption.value = '';
+                            loadingOption.textContent = 'Loading data...';
+                            loadingOption.className = 'data-loading';
+                            inputElement.appendChild(loadingOption);
+                        }
+                    } else if (input.type === 'select') {
+                        inputElement = document.createElement('select');
+                        inputElement.className = 'form-input';
+                        inputElement.name = input.name;
+
+                        if (input.options) {
+                            input.options.forEach(option => {
+                                const optionElement = document.createElement('option');
+                                optionElement.value = option;
+                                optionElement.textContent = option;
+                                inputElement.appendChild(optionElement);
+                            });
+                        }
+                    } else if (input.type === 'textarea') {
+                        inputElement = document.createElement('textarea');
+                        inputElement.className = 'form-input';
+                        inputElement.name = input.name;
+                        inputElement.rows = 3;
+                    } else if (input.type === 'file') {
+                        inputElement = document.createElement('input');
+                        inputElement.className = 'form-input';
+                        inputElement.type = 'file';
+                        inputElement.name = input.name;
+                    } else {
+                        inputElement = document.createElement('input');
+                        inputElement.className = 'form-input';
+                        inputElement.type = input.type;
+                        inputElement.name = input.name;
+
+                        if (input.value) inputElement.value = input.value;
+                        if (input.min) inputElement.min = input.min;
+                        if (input.max) inputElement.max = input.max;
+                        if (input.placeholder) inputElement.placeholder = input.placeholder;
+                    }
+
+                    if (input.required) inputElement.required = true;
+
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(inputElement);
+                    
+                    // إضافة وصف إذا وجد
+                    if (input.description) {
+                        const description = document.createElement('div');
+                        description.className = 'data-info';
+                        description.textContent = input.description;
+                        formGroup.appendChild(description);
+                    }
+                    
+                    formContainer.appendChild(formGroup);
+                });
+            } else {
+                const noInputs = document.createElement('p');
+                noInputs.textContent = 'This endpoint does not require input data';
+                formContainer.appendChild(noInputs);
+            }
+
+            const testButton = document.createElement('button');
+            testButton.className = 'test-btn';
+            testButton.innerHTML = '<i class="fas fa-bolt"></i> Test Endpoint';
+            testButton.addEventListener('click', () => testEndpoint(endpoint, card));
+
+            const resultContainer = document.createElement('div');
+            resultContainer.className = 'result-container hidden';
+
+            const resultTitle = document.createElement('div');
+            resultTitle.className = 'result-title';
+
+            const resultLabel = document.createElement('span');
+            resultLabel.textContent = 'Result:';
+
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-btn';
+            copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+
+            resultTitle.appendChild(resultLabel);
+            resultTitle.appendChild(copyButton);
+
+            const result = document.createElement('div');
+            result.className = 'result';
+
+            resultContainer.appendChild(resultTitle);
+            resultContainer.appendChild(result);
+
+            card.appendChild(header);
+            card.appendChild(url);
+            card.appendChild(formContainer);
+            card.appendChild(testButton);
+            card.appendChild(resultContainer);
+
+            return card;
+        }
+
+        // اختبار نقطة النهاية
+        async function testEndpoint(endpoint, card) {
+            const resultContainer = card.querySelector('.result-container');
+            const resultElement = card.querySelector('.result');
+            const copyButton = card.querySelector('.copy-btn');
+            
+            resultContainer.classList.add('hidden');
+            loadingElement.style.display = 'block';
+            
+            try {
+                // جمع بيانات الإدخال
+                let url = endpoint.url;
+                let requestData = {};
+                let useFormData = endpoint.formData || false;
+                let useJsonData = endpoint.jsonData || false;
+                
+                // معالجة بيانات الإدخال
+                if (endpoint.inputs && endpoint.inputs.length > 0) {
+                    endpoint.inputs.forEach(input => {
+                        const inputElement = card.querySelector(`[name="${input.name}"]`);
+                        if (inputElement && inputElement.value) {
+                            // استبدال المعلمات في URL
+                            if (url.includes(`{${input.name}}`)) {
+                                url = url.replace(`{${input.name}}`, encodeURIComponent(inputElement.value));
+                            } else {
+                                // إضافة إلى بيانات الطلب
+                                if (useFormData) {
+                                    if (inputElement.type === 'file' && inputElement.files.length > 0) {
+                                        if (!(requestData instanceof FormData)) {
+                                            requestData = new FormData();
+                                        }
+                                        requestData.append(input.name, inputElement.files[0]);
+                                    } else {
+                                        if (!(requestData instanceof FormData)) {
+                                            requestData = new FormData();
+                                        }
+                                        requestData.append(input.name, inputElement.value);
+                                    }
+                                } else if (useJsonData) {
+                                    // معالجة خاصة لأنواع البيانات المختلفة
+                                    if (input.name === 'product_ids' || input.name === 'features') {
+                                        try {
+                                            requestData[input.name] = JSON.parse(inputElement.value);
+                                        } catch (e) {
+                                            // إذا فشل التحليل، افصل بالقوائم
+                                            const values = inputElement.value.replace(/[\[\]\s]/g, '').split(',');
+                                            requestData[input.name] = values.filter(v => v !== '').map(v => {
+                                                const num = parseInt(v.trim());
+                                                return isNaN(num) ? v.trim() : num;
+                                            });
+                                        }
+                                        
+                                        // التأكد من أن product_ids هي مصفوفة
+                                        if (input.name === 'product_ids' && !Array.isArray(requestData[input.name])) {
+                                            requestData[input.name] = [requestData[input.name]];
+                                        }
+                                    } else if (input.type === 'number') {
+                                        requestData[input.name] = Number(inputElement.value);
+                                    } else if (input.type === 'select' && (inputElement.value === 'true' || inputElement.value === 'false')) {
+                                        requestData[input.name] = inputElement.value === 'true';
+                                    } else {
+                                        requestData[input.name] = inputElement.value;
+                                    }
+                                } else {
+                                    requestData[input.name] = inputElement.value;
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // إعداد خيارات الطلب
+                const options = {
+                    method: endpoint.method,
+                    headers: {}
+                };
+                
+                // إضافة رمز المصادقة إذا كان متوفراً
+                const authToken = localStorage.getItem('apiAuthToken');
+                if (authToken) {
+                    options.headers['Authorization'] = `Bearer ${authToken}`;
+                }
+                
+                // إعداد البيانات للطلب حسب نوعه
+                if (endpoint.method !== 'GET') {
+                    if (useFormData) {
+                        options.body = requestData;
+                        // لا نضيف Content-Type للـ FormData، المتصفح سيفعل ذلك تلقائياً
+                    } else if (useJsonData) {
+                        options.headers['Content-Type'] = 'application/json';
+                        options.body = JSON.stringify(requestData);
+                    } else {
+                        options.headers['Content-Type'] = 'application/json';
+                        options.body = JSON.stringify(requestData);
+                    }
+                } else {
+                    // لطلبات GET، نضيف المعلمات إلى URL كاستعلام
+                    const params = new URLSearchParams();
+                    for (const [key, value] of Object.entries(requestData)) {
+                        params.append(key, value);
+                    }
+                    if (params.toString()) {
+                        url += (url.includes('?') ? '&' : '?') + params.toString();
+                    }
+                }
+                
+                // الحصول على رابط الواجهة الخلفية
+                const baseURL = localStorage.getItem('apiBaseURL') || 'http://127.0.0.1:5000/api';
+                
+                // بناء عنوان URL الكامل
+                const fullURL = baseURL + url;
+                
+                // إرسال الطلب
+                const startTime = performance.now();
+                const response = await fetch(fullURL, options);
+                const endTime = performance.now();
+                const responseTime = (endTime - startTime).toFixed(2);
+                
+                const responseText = await response.text();
+                
+                // التحقق مما إذا كانت الاستجابة هي HTML (خطأ)
+                if (responseText.trim().startsWith('<!')) {
+                    throw new Error(`Server returned HTML instead of JSON. There may be a server error or incorrect sent data`);
+                }
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error(`Invalid response from server: ${responseText.substring(0, 100)}...`);
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`Request error: ${response.status} ${response.statusText} - ${JSON.stringify(data)}`);
+                }
+                
+                // Format the response based on endpoint type
+                let formattedResponse = data;
+                if (endpoint.url.includes('similarity-between-users') && typeof data === 'object') {
+                    formattedResponse = formatSimilarityResponse(data);
+                } else if (endpoint.url.includes('recommend') && Array.isArray(data)) {
+                    formattedResponse = formatRecommendationResponse(data);
+                } else {
+                    formattedResponse = syntaxHighlight(JSON.stringify(data, null, 2));
+                }
+                
+                displayResult(resultElement, formattedResponse, true, response.status, responseTime);
+                copyButton.onclick = () => copyToClipboard(JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error testing endpoint:', error);
+                displayResult(resultElement, error.message, false, 0, 0);
+                copyButton.onclick = () => copyToClipboard(error.message);
+            } finally {
+                loadingElement.style.display = 'none';
+                resultContainer.classList.remove('hidden');
+            }
+        }
+
+        // Format similarity response for better visualization
+        function formatSimilarityResponse(data) {
+            if (data.similarity_score !== undefined) {
+                const score = data.similarity_score;
+                const percentage = (score * 100).toFixed(2);
+                
+                return `
+<div class="similarity-result">
+    <h3>User Similarity Analysis</h3>
+    <div class="similarity-score">${percentage}%</div>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percentage}%"></div>
+    </div>
+    <p><strong>User 1:</strong> ${data.user_id1 || 'N/A'}</p>
+    <p><strong>User 2:</strong> ${data.user_id2 || 'N/A'}</p>
+    <p><strong>Similarity Metric:</strong> ${data.similarity_metric || 'Cosine Similarity'}</p>
+    ${data.common_features ? `<p><strong>Common Features:</strong> ${data.common_features.join(', ')}</p>` : ''}
+    ${data.explanation ? `<p><strong>Explanation:</strong> ${data.explanation}</p>` : ''}
+</div>
+<pre>${syntaxHighlight(JSON.stringify(data, null, 2))}</pre>`;
+            }
+            return syntaxHighlight(JSON.stringify(data, null, 2));
+        }
+
+        // Format recommendation response for better visualization
+        function formatRecommendationResponse(data) {
+            if (Array.isArray(data) && data.length > 0 && data[0].product_id !== undefined) {
+                let html = '<div class="recommendations-container">';
+                html += '<h3>Recommended Products</h3>';
+                
+                data.forEach(item => {
+                    html += `
+<div class="recommendation-card">
+    <div class="recommendation-header">
+        <strong>Product ID: ${item.product_id}</strong>
+        ${item.score ? `<span class="score-badge">Score: ${item.score.toFixed(4)}</span>` : ''}
+    </div>
+    ${item.product_name ? `<p><strong>Name:</strong> ${item.product_name}</p>` : ''}
+    ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
+    ${item.price ? `<p><strong>Price:</strong> $${item.price.toFixed(2)}</p>` : ''}
+    ${item.rating ? `<p><strong>Rating:</strong> ${item.rating}/5</p>` : ''}
+</div>`;
+                });
+                
+                html += '</div>';
+                html += `<pre>${syntaxHighlight(JSON.stringify(data, null, 2))}</pre>`;
+                return html;
+            }
+            return syntaxHighlight(JSON.stringify(data, null, 2));
+        }
+
+        // Syntax highlighting for JSON
+        function syntaxHighlight(json) {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                    } else {
+                        cls = 'json-string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        // عرض نتيجة الاختبار
+        function displayResult(element, data, isSuccess, statusCode, responseTime) {
+            // Create response info bar
+            const responseInfo = document.createElement('div');
+            responseInfo.className = 'response-info';
+            
+            if (isSuccess) {
+                responseInfo.innerHTML = `
+                    <span class="status-success">Status: ${statusCode} OK</span>
+                    <span>Response Time: ${responseTime} ms</span>
+                `;
+            } else {
+                responseInfo.innerHTML = `
+                    <span class="status-error">Error</span>
+                `;
+            }
+            
+            // Clear previous content and add new
+            element.innerHTML = '';
+            element.appendChild(responseInfo);
+            
+            // Add the response data
+            const pre = document.createElement('pre');
+            if (typeof data === 'string' && data.startsWith('<')) {
+                // If it's HTML, insert as is
+                pre.innerHTML = data;
+            } else {
+                // Otherwise, treat as text
+                pre.innerHTML = data;
+            }
+            element.appendChild(pre);
+            
+            element.className = isSuccess ? 'result success' : 'result error';
+        }
+
+        // نسخ النتيجة إلى الحافظة
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Result copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Initialize when the page loads
+        document.addEventListener('DOMContentLoaded', initializeUI);
+    </script>
+</body>
+
+</html>
